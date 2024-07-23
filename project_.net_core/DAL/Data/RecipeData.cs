@@ -22,15 +22,13 @@ namespace DAL.Data
         }
         public async Task<RecipeDto> GetRecipe(int id)
         {
-            var recipe = await _context.AdminUsers.FindAsync(id);
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null)
+            {
+                return null;
+            }
             return _mapper.Map<RecipeDto>(recipe);
         }
-
-        //public async Task<List<Recipe>> GetAllRecipes()
-        //{
-        //    return await _context.Recipes.ToListAsync();
-        //}
-
         public async Task<bool> AddRecipe(RecipeDto recipeDto)
         {
             var recipe = _mapper.Map<Recipe>(recipeDto);

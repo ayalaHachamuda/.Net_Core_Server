@@ -10,9 +10,9 @@ namespace DAL.Interface
 {
     public interface IVote
     {
-        Task<VoteDto> getVote(int id);
+        Task<VoteDto> GetVote(int id);
         //Task<List<VoteDto>> getAllVotes();
-        Task<bool> addVote(VoteDto vote);
-        Task<bool> deleteVote(int id);
+        Task<bool> AddVote(VoteDto vote);
+        Task<bool> DeleteVote(int id);
     }
 }

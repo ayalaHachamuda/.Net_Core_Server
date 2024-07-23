@@ -13,11 +13,11 @@ namespace DAL.Profiles
     {
         public ProfileProj() 
         {
-            CreateMap<AdminUser, AdminUserDto>();
+            CreateMap<AdminUser, AdminUserDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap(); 
-            CreateMap<Competition, CompetitionDto>();
-            CreateMap<Recipe, RecipeDto>();
-            CreateMap<Vote, VoteDto>();
+            CreateMap<Competition, CompetitionDto>().ReverseMap();
+            CreateMap<Recipe, RecipeDto>().ReverseMap();
+            CreateMap<Vote, VoteDto>().ReverseMap();
         }
     }
 }
