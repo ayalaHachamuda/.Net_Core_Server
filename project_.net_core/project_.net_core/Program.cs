@@ -116,11 +116,12 @@ public class Program
         builder.Services.AddScoped<ICompetition, CompetitionData>();
         builder.Services.AddScoped<IRecipe, RecipeData>();
         builder.Services.AddScoped<IVote, VoteData>();
-        builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddScoped<IAdminUserService, AdminUserService>(); // הוספת השירות של AdminUser
+       // builder.Services.AddScoped<IUserService, UserService>();
+       // builder.Services.AddScoped<IAdminUserService, AdminUserService>(); // הוספת השירות של AdminUser
         builder.Services.AddDbContext<ProjectContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDataBase")));
         builder.Services.AddAutoMapper(typeof(ProfileProj).Assembly);
+        builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();
 
@@ -131,10 +132,11 @@ public class Program
         }
 
         app.UseCors(myCors);
-
+        app.UseMiddleware<JwtMiddleware>();
         app.UseMiddleware<LogMiddleware>();
 
         app.UseHttpsRedirection();
+        
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

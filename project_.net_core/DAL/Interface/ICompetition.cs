@@ -10,8 +10,8 @@ namespace DAL.Interface
     {
         Task<CompetitionDto> GetCompetition(int id);
         //Task<List<Competition>> GetAllCompetitions();
-        Task<bool> AddCompetition(CompetitionDto competition);
-        Task<bool> UpdateCompetition(CompetitionDto competition);
+        Task<bool> AddCompetition(CompetitionDto competition,int adminId);
+        Task<bool> UpdateCompetition(CompetitionDto competition, int adminId);
         Task<bool> DeleteCompetition(int id);
     }
 }

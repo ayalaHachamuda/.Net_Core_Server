@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL.Dtos;
 using DAL.Interface;
+using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System.Threading.Tasks;
 
@@ -23,6 +24,11 @@ namespace DAL.Data
             return _mapper.Map<UserDto>(user);
         }
 
+        public async Task<List<UserDto>> GetAllUsers()
+        {
+            var users = await _context.Users.Where(x=>x.Role== "User").ToListAsync();
+            return _mapper.Map<List<UserDto>>(users);
+        }
         public async Task<User> GetUserData(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -41,9 +47,11 @@ namespace DAL.Data
             return true;
         }
 
-        public async Task<bool> UpdateUser(UserDto userDto)
+        public async Task<bool> UpdateUser(UserDto userDto, int userId)
         {
             var user = _mapper.Map<User>(userDto);
+            user.Role = "User";
+            user.Id = userId;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;

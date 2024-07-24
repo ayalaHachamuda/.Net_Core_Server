@@ -12,8 +12,8 @@ namespace DAL.Interface
     {
         Task<RecipeDto> GetRecipe(int id);
         //Task<List<Recipe>> GetAllRecipes();
-        Task<bool> AddRecipe(RecipeDto recipe);
-        Task<bool> UpdateRecipe(RecipeDto recipe);
+        Task<bool> AddRecipe(RecipeDto recipe,int userId);
+        Task<bool> UpdateRecipe(RecipeDto recipe,int userId);
         Task<bool> DeleteRecipe(int id);
     }
 }

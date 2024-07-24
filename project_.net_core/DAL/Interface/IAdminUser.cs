@@ -10,9 +10,9 @@ namespace DAL.Interface
     public interface IAdminUser
     {
         Task<AdminUserDto> GetAdminUser(int id);
-        //Task<List<AdminUserDto>> getAllAdminUsers();
+        Task<List<AdminUserDto>> GetAllAdminUsers();
         Task<bool> AddAdminUser(AdminUserDto adminUserDto);
-        Task<bool> UpdateAdminUser(AdminUserDto adminUserDto);
+        Task<bool> UpdateAdminUser(AdminUserDto adminUserDto,int adminId);
         Task<bool> DeleteAdminUser(int id);
     }
 }

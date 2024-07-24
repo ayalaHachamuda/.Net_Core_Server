@@ -11,9 +11,9 @@ namespace DAL.Interface
     public interface IUser
     {
         Task<UserDto> GetUser(int id);
-        //Task<List<User>> getAllUsers();
+        Task<List<UserDto>> GetAllUsers();
         Task<bool>AddUser(UserDto user);
-        Task<bool>UpdateUser(UserDto user);
+        Task<bool>UpdateUser(UserDto user, int userId);
         Task<bool> DeleteUser(int id);
 
     }

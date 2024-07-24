@@ -12,13 +12,13 @@ namespace project_.net_core.Controllers
     public class CompetitionController : Controller
     {
         private readonly ICompetition _dbstoreCompetition;
-
-        public CompetitionController(ICompetition dbstoreCompetition)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public CompetitionController(ICompetition dbstoreCompetition, IHttpContextAccessor httpContextAccessor)
         {
             _dbstoreCompetition = dbstoreCompetition;
+            _httpContextAccessor = httpContextAccessor; 
         }
         [HttpGet]
-        //[Route("/api/GetCompetition")]
         public async Task<ActionResult<CompetitionDto>> get(int id)
         {
             var res = await _dbstoreCompetition.GetCompetition(id);
@@ -26,27 +26,50 @@ namespace project_.net_core.Controllers
 
         }
         [HttpPost]
-
-        //[Route("/api/CreateCompetition")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<bool>> add(CompetitionDto competitionDto)
+        public async Task<ActionResult<bool>> add([FromBody] CompetitionDto competitionDto)
         {
-            var res = await _dbstoreCompetition.AddCompetition(competitionDto);
+            var context = _httpContextAccessor.HttpContext;
+
+            if (context == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "HttpContext is null.");
+            }
+
+            var adminIdString = context.Items["User"]?.ToString();
+
+            if (string.IsNullOrEmpty(adminIdString) || !int.TryParse(adminIdString, out var adminId))
+            {
+                return Unauthorized("User not found in token.");
+            }
+
+            var res = await _dbstoreCompetition.AddCompetition(competitionDto, adminId);
             return Ok(res);
 
         }
-
+       
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        //[Route("/api/UpdateCompetition")]
         public async Task<ActionResult<bool>> put(CompetitionDto competition)
         {
-            var res = await _dbstoreCompetition.UpdateCompetition(competition);
+            var context = _httpContextAccessor.HttpContext;
+
+            if (context == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "HttpContext is null.");
+            }
+
+            var adminIdString = context.Items["User"]?.ToString();
+
+            if (string.IsNullOrEmpty(adminIdString) || !int.TryParse(adminIdString, out var adminId))
+            {
+                return Unauthorized("User not found in token.");
+            }
+            var res = await _dbstoreCompetition.UpdateCompetition(competition, adminId);
             return Ok(res);
         }
 
         [HttpDelete]
-        //[Route("/api/DeleteCompetition")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> delete(int id)
         {

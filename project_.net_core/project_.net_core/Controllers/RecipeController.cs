@@ -13,13 +13,15 @@ namespace project_.net_core.Controllers
     public class RecipeController : Controller
     {
         private readonly IRecipe _dbstoreRecipe;
+       
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RecipeController(IRecipe dbstoreRecipe)
+        public RecipeController(IRecipe dbstoreRecipe, IHttpContextAccessor httpContextAccessor)
         {
             _dbstoreRecipe = dbstoreRecipe;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
-        //[Route("/api/GetRecipe")]
         public async Task<ActionResult<RecipeDto>> get(int id)
         {
             var res = await _dbstoreRecipe.GetRecipe(id);
@@ -32,25 +34,49 @@ namespace project_.net_core.Controllers
         }
         [HttpPost()]
         [Authorize(Roles = "Admin,User")]
-        //[Route("/api/CreateCompetition")]
-        public async Task<ActionResult<bool>> add(RecipeDto recipeDto)
+       
+        public async Task<IActionResult> add([FromBody] RecipeDto recipeDto)
         {
-            var res = await _dbstoreRecipe.AddRecipe(recipeDto);
-            return Ok(res);
+            var context = _httpContextAccessor.HttpContext;
 
+            if (context == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "HttpContext is null.");
+            }
+
+            var userIdString = context.Items["User"]?.ToString();
+
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized("User not found in token.");
+            }
+
+            var res = await _dbstoreRecipe.AddRecipe(recipeDto, userId);
+            return Ok(res);
         }
 
         [HttpPut]
         [Authorize(Roles = "Admin,User")]
-        //[Route("/api/UpdateRecipe")]
         public async Task<ActionResult<bool>> put(RecipeDto recipe)
         {
-            var res = await _dbstoreRecipe.UpdateRecipe(recipe);
+            var context = _httpContextAccessor.HttpContext;
+
+            if (context == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "HttpContext is null.");
+            }
+
+            var userIdString = context.Items["User"]?.ToString();
+
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized("User not found in token.");
+            }
+            var res = await _dbstoreRecipe.UpdateRecipe(recipe,userId);
             return Ok(res);
         }
 
         [HttpDelete]
-        //[Route("/api/DeleteRecipe")]
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<bool>> delete(int id)
         {

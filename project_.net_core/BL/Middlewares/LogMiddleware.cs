@@ -40,7 +40,7 @@ namespace BL
                 counterGet++;
                 Log.Information($"GET request made {counterGet} times.");
             }
-            await _next(context);
+          await _next(context);
 
         }
     }

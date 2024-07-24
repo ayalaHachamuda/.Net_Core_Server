@@ -10,9 +10,9 @@ using DAL.Interface;
 using DAL.Dtos;
 namespace DAL.Data
 {
-    public class AdminUserData:IAdminUser
+    public class AdminUserData : IAdminUser
     {
-        
+
         private readonly ProjectContext _context;
         private readonly IMapper _mapper;
 
@@ -20,6 +20,11 @@ namespace DAL.Data
         {
             _context = context;
             _mapper = mapper;
+        }
+        public async Task<List<AdminUserDto>> GetAllAdminUsers()
+        {
+            var adminUsers = await _context.AdminUsers.Where(x => x.Role == "Admin").ToListAsync();
+            return _mapper.Map<List<AdminUserDto>>(adminUsers);
         }
 
         public async Task<AdminUserDto> GetAdminUser(int id)
@@ -34,6 +39,7 @@ namespace DAL.Data
 
         public async Task<bool> AddAdminUser(AdminUserDto adminUserDto)
         {
+
             var adminUser = _mapper.Map<AdminUser>(adminUserDto);
 
             // הגדרת התפקיד כאן
@@ -44,9 +50,12 @@ namespace DAL.Data
             return true;
         }
 
-        public async Task<bool> UpdateAdminUser(AdminUserDto adminUserDto)
+        public async Task<bool> UpdateAdminUser(AdminUserDto adminUserDto, int adminId)
         {
             var adminUser = _mapper.Map<AdminUser>(adminUserDto);
+            // הגדרת התפקיד כאן
+            adminUser.Role = "Admin";
+            adminUser.Id = adminId;
             _context.AdminUsers.Update(adminUser);
             await _context.SaveChangesAsync();
             return true;

@@ -28,17 +28,18 @@ namespace DAL.Data
             var competitionUser = await _context.Competitions.FindAsync(id);
             return _mapper.Map<CompetitionDto>(competitionUser);
         }
-        public async Task<bool> AddCompetition(CompetitionDto competitionDto)
+        public async Task<bool> AddCompetition(CompetitionDto competitionDto, int adminId)
         {
             var competition = _mapper.Map<Competition>(competitionDto);
-            _context.Competitions.AddAsync(competition);
+            competition.AdminId = adminId;
+            await _context.Competitions.AddAsync(competition);
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public async Task<bool> UpdateCompetition(CompetitionDto competitionDto)
+        public async Task<bool> UpdateCompetition(CompetitionDto competitionDto, int adminId)
         {
             var competition = _mapper.Map<Competition>(competitionDto);
+           competition.AdminId = adminId;
             _context.Competitions.Update(competition);
             await _context.SaveChangesAsync();
             return true;

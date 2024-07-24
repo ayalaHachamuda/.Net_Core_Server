@@ -29,17 +29,20 @@ namespace DAL.Data
             }
             return _mapper.Map<RecipeDto>(recipe);
         }
-        public async Task<bool> AddRecipe(RecipeDto recipeDto)
+        
+        public async Task<bool> AddRecipe(RecipeDto recipeDto, int userId)
         {
             var recipe = _mapper.Map<Recipe>(recipeDto);
+            recipe.UserId = userId;
             await _context.Recipes.AddAsync(recipe);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> UpdateRecipe(RecipeDto recipeDto)
+        public async Task<bool> UpdateRecipe(RecipeDto recipeDto, int userId)
         {
             var recipe = _mapper.Map<Recipe>(recipeDto);
+            recipe.UserId = userId;
             _context.Recipes.Update(recipe);
             await _context.SaveChangesAsync();
             return true;
